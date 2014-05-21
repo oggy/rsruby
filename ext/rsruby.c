@@ -118,7 +118,7 @@ VALUE rs_shutdown(VALUE self){
 VALUE rr_init(VALUE self, VALUE r_argv){
 
   char **argv;
-  int i;
+  int i, argc = 1;
   VALUE arg;
 
   switch (TYPE(r_argv)) {
@@ -137,17 +137,7 @@ VALUE rr_init(VALUE self, VALUE r_argv){
         else rb_raise(rb_eTypeError, "rr_init array input must contain only strings");
       }
 
-      break;
-
-    case T_NIL:
-
-      argv = (char **)calloc(3, sizeof(char *));
-      argv[1] = (char *)malloc((strlen("-q") + 1) * sizeof(char));
-      if (argv[1] == NULL) rb_raise(rb_eTypeError, "rr_init could not allocate memory");
-      strcpy(argv[1], "-q");
-      argv[2] = (char *)malloc((strlen("--vanilla") + 1) * sizeof(char));
-      if (argv[2] == NULL) rb_raise(rb_eTypeError, "rr_init could not allocate memory");
-      strcpy(argv[2], "--vanilla");
+      argc += RARRAY_LEN(r_argv);
       break;
 
     default:
@@ -159,13 +149,14 @@ VALUE rr_init(VALUE self, VALUE r_argv){
   argv[0] = (char *)malloc((strlen("rsruby") + 1) * sizeof(char));
   if (argv[0] == NULL) rb_raise(rb_eTypeError, "rr_init could not allocate memory");
   strcpy(argv[0], "rsruby");
-  init_R(0, argv);
+
+  init_R(argc, argv);
 
   // Initialize the list of protected objects
   R_References = R_NilValue;
   SET_SYMVALUE(install("R.References"), R_References);
 
-  for (i = 0; i < sizeof(argv) / sizeof(char*); i++)
+  for (i = 0; i < argc; i++)
     free(argv[i]);
   free(argv);
 
@@ -182,8 +173,7 @@ void init_R(int argc, char **argv){
     setenv("R_HOME", RSRUBY_R_HOME, 0);
   }
 
-  Rf_initialize_R(sizeof(argv) / sizeof(char *), argv);
-
+  Rf_initialize_R(argc, argv);
   R_Interactive = TRUE; 
   R_CStackLimit = (uintptr_t)-1; //disable stack limit checking
   setup_Rmainloop();

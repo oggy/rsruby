@@ -69,7 +69,7 @@ class RSRuby
 
   attr_accessor :proc_table, :class_table, :default_mode, :caching
 
-  @@r_args = []
+  @@r_args = ["--quiet", "--vanilla"]
   def self.r_args
     @@r_args
   end
