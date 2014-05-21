@@ -115,13 +115,59 @@ VALUE rs_shutdown(VALUE self){
 /*
  * Starts the R interpreter.
  */
-VALUE rr_init(VALUE self){
+VALUE rr_init(VALUE self, VALUE r_argv){
 
+  char **argv;
+  int i;
+  VALUE arg;
+
+  switch (TYPE(r_argv)) {
+
+    case T_ARRAY:
+
+      argv = (char **)calloc(RARRAY_LEN(r_argv) + 1, sizeof(char *));
+      if (argv == NULL) rb_raise(rb_eTypeError, "rr_init could not allocate memory");
+
+      for (i = 0; i < RARRAY_LEN(r_argv); i++) {
+        arg = rb_ary_entry(r_argv, i);
+        if (TYPE(arg) == T_STRING) {
+          argv[i+1] = (char *)malloc((RSTRING_LEN(arg) + 1) * sizeof(char));
+          strcpy(argv[i+1], StringValueCStr(arg));
+        }
+        else rb_raise(rb_eTypeError, "rr_init array input must contain only strings");
+      }
+
+      break;
+
+    case T_NIL:
+
+      argv = (char **)calloc(3, sizeof(char *));
+      argv[1] = (char *)malloc((strlen("-q") + 1) * sizeof(char));
+      if (argv[1] == NULL) rb_raise(rb_eTypeError, "rr_init could not allocate memory");
+      strcpy(argv[1], "-q");
+      argv[2] = (char *)malloc((strlen("--vanilla") + 1) * sizeof(char));
+      if (argv[2] == NULL) rb_raise(rb_eTypeError, "rr_init could not allocate memory");
+      strcpy(argv[2], "--vanilla");
+      break;
+
+    default:
+      rb_raise(rb_eTypeError, "rr_init must receive an array of strings or NULL");
+      break;
+  }
   
-  init_R(0,NULL);
+
+  argv[0] = (char *)malloc((strlen("rsruby") + 1) * sizeof(char));
+  if (argv[0] == NULL) rb_raise(rb_eTypeError, "rr_init could not allocate memory");
+  strcpy(argv[0], "rsruby");
+  init_R(0, argv);
+
   // Initialize the list of protected objects
   R_References = R_NilValue;
   SET_SYMVALUE(install("R.References"), R_References);
+
+  for (i = 0; i < sizeof(argv) / sizeof(char*); i++)
+    free(argv[i]);
+  free(argv);
 
   return self;
 
@@ -132,13 +178,12 @@ VALUE rr_init(VALUE self){
  */
 void init_R(int argc, char **argv){
 
-  char *defaultArgv[] = {"rsruby","-q","--vanilla"};
-
   if (RSRUBY_R_HOME) {
     setenv("R_HOME", RSRUBY_R_HOME, 0);
   }
-  // Rf_initEmbeddedR(sizeof(defaultArgv) / sizeof(defaultArgv[0]), defaultArgv);
-  Rf_initialize_R(sizeof(defaultArgv) / sizeof(defaultArgv[0]), defaultArgv);
+
+  Rf_initialize_R(sizeof(argv) / sizeof(char *), argv);
+
   R_Interactive = TRUE; 
   R_CStackLimit = (uintptr_t)-1; //disable stack limit checking
   setup_Rmainloop();
@@ -162,7 +207,7 @@ void Init_rsruby_c(){
 
   cRRuby = rb_define_class("RSRuby",rb_cObject);
 
-  rb_define_method(cRRuby, "r_init", rr_init, 0);
+  rb_define_method(cRRuby, "r_init", rr_init, 1);
   rb_define_method(cRRuby, "get_fun", get_fun, 1);
   rb_define_method(cRRuby, "shutdown", rs_shutdown, 0);
 

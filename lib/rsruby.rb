@@ -69,13 +69,21 @@ class RSRuby
 
   attr_accessor :proc_table, :class_table, :default_mode, :caching
 
+  @@r_args = []
+  def self.r_args
+    @@r_args
+  end
+  def self.r_args= r_args
+    @@r_args = r_args
+  end
+
   #Create a new RSRuby interpreter instance. The Singleton design pattern
   #ensures that only one instance can be running in a script. Further
   #calls to RSRuby.instance will return the original instance.
-  def initialize()
+  def initialize
 
     #Initialize R
-    r_init
+    r_init(@@r_args)
 
     @default_mode = NO_DEFAULT
 

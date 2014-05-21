@@ -73,7 +73,7 @@ SEXP RecursiveRelease(SEXP obj, SEXP list);
 
 VALUE rs_shutdown(VALUE self);
 VALUE get_fun(VALUE self, VALUE name);
-VALUE rr_init(VALUE self);   
+VALUE rr_init(VALUE self, VALUE r_argv);   
 
 VALUE crash(void);
 
