@@ -69,12 +69,12 @@ class RSRuby
 
   attr_accessor :proc_table, :class_table, :default_mode, :caching
 
-  @@r_args = ["--quiet", "--vanilla"]
-  def self.r_args
-    @@r_args
+  @@r_flags = ["--quiet", "--vanilla"]
+  def self.r_flags
+    @@r_flags
   end
-  def self.r_args= r_args
-    @@r_args = r_args
+  def self.r_flags= r_flags
+    @@r_flags = r_flags
   end
 
   #Create a new RSRuby interpreter instance. The Singleton design pattern
@@ -83,7 +83,7 @@ class RSRuby
   def initialize
 
     #Initialize R
-    r_init(@@r_args)
+    r_init(@@r_flags)
 
     @default_mode = NO_DEFAULT
 
