@@ -48,6 +48,9 @@ SEXP do_eval_expr(SEXP e) {
   SEXP res;
   VALUE rb_eRException;
   int error = 0;
+  const char *raw_msg;
+  char *escaped_msg;
+  size_t i, j, escapes;
 
   signal(SIGINT, interrupt_R);
   interrupted = 0;
@@ -61,7 +64,23 @@ SEXP do_eval_expr(SEXP e) {
     else {
       rb_eRException = rb_const_get(rb_cObject, 
 				    rb_intern("RException"));
-      rb_raise(rb_eRException, get_last_error_msg());
+      raw_msg = get_last_error_msg();
+
+      /* escape % */
+      i = escapes = 0;
+      while (raw_msg[i] != NULL) {
+        if (raw_msg[i] == '%') escapes++;
+        i++;
+      }
+      escaped_msg = (char *)calloc((size_t)(i + escapes), sizeof(char *));
+      i = j = 0;
+      while ((escaped_msg[j] = raw_msg[i]) != NULL) {
+        if (escaped_msg[j] == '%') {
+          escaped_msg[++j] = '%';
+        }
+        i++; j++;
+      }
+      rb_raise(rb_eRException, escaped_msg);
       return NULL;
     }
   }
