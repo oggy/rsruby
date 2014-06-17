@@ -80,7 +80,7 @@ SEXP do_eval_expr(SEXP e) {
         }
         i++; j++;
       }
-      rb_raise(rb_eRException, escaped_msg);
+      rb_raise(rb_eRException, "%s", escaped_msg);
       return NULL;
     }
   }
