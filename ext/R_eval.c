@@ -47,6 +47,7 @@ void interrupt_R(int signum)
 SEXP do_eval_expr(SEXP e) {
   SEXP res;
   VALUE rb_eRException;
+  VALUE errobj;
   int error = 0;
   const char *raw_msg;
   char *escaped_msg;

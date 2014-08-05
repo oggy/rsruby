@@ -48,6 +48,7 @@ SEXP ruby_to_R(VALUE obj)
 {
   SEXP robj;
   VALUE str;
+  VALUE errobj;
   char buf [100];
 
   //Return nil if object is nil
