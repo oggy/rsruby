@@ -54,7 +54,7 @@ require 'complex'
 
 class RSRuby
 
-  VERSION = '0.5.3'
+  VERSION = '0.5.4'
 
   include Singleton
 
@@ -189,9 +189,12 @@ class RSRuby
     if name.length > 1 and name[-1].chr == '_' and name[-2].chr != '_'
       name = name[0..-2]
     end
-    newname = name.gsub(/__/,'<-')
-    newname = name.gsub(/_/, '.')
-    return newname
+    # newname = name.gsub(/([^\\])__/,'\1<-')  this doesn't appear to have been used anyway
+    name = name.gsub(/([^\\])_/, '\1.')
+    name = name.gsub(/^_/, '.')
+    name = name.gsub(/\\_/, '_')
+    name = name.gsub(/[^A-Za-z0-9_\.]/, '')   # see make.names for what is a legal character - sanitization
+    return name
   end
 
   #Converts an Array of function arguments into lcall format. If the last 
