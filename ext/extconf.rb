@@ -4,10 +4,11 @@ dir_config('R')
 
 some_paths = ENV['PATH'].split(File::PATH_SEPARATOR) + %w[
   /usr/local/lib64/R
-  /usr/local/lib/R 
-  /usr/lib64/R 
-  /usr/lib/R 
+  /usr/local/lib/R
+  /usr/lib64/R
+  /usr/lib/R
   /Library/Frameworks/R.framework/Resources
+  /usr/local/Frameworks/R.framework/Resources
 ]
 
 some_lib_paths = some_paths.map{|dir| File.join(dir, 'lib') }

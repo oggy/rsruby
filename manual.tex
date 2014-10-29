@@ -81,13 +81,19 @@ Installation requires some correct configuring of your R setup and then a standa
 
 \item First, ensure that the |R_HOME| environment variable is set correctly. On my Ubuntu linux machine this is:
 
-\begin{Verbatim} 
+\begin{Verbatim}
 R_HOME=/usr/lib/R
 \end{Verbatim}
 
-While on OS X it is:
+While on OS X you should check:
 
-\begin{Verbatim} 
+\begin{Verbatim}
+R_HOME=/usr/local/Frameworks/R.framework/Resources
+\end{Verbatim}
+
+or
+
+\begin{Verbatim}
 R_HOME=/Library/Frameworks/R.framework/Resources
 \end{Verbatim}
 
@@ -155,10 +161,10 @@ Calls to R functions are made via the R interpreter object. In the example below
 
 \begin{Verbatim}
 irb> r.wilcox_test([1,2,3],[4,5,6])
-=> {"p.value"=>0.1, "null.value"=>{"mu"=>0.0}, 
-    "data.name"=>"c(1, 2, 3) and c(4, 5, 6)", 
-    "method"=>"Wilcoxon rank sum test", 
-    "alternative"=>"two.sided", "parameter"=>nil, 
+=> {"p.value"=>0.1, "null.value"=>{"mu"=>0.0},
+    "data.name"=>"c(1, 2, 3) and c(4, 5, 6)",
+    "method"=>"Wilcoxon rank sum test",
+    "alternative"=>"two.sided", "parameter"=>nil,
     "statistic"=>{"W"=>0.0}}
 \end{Verbatim}
 
@@ -166,7 +172,7 @@ irb> r.wilcox_test([1,2,3],[4,5,6])
 
 \section{Looking Up R Objects From Ruby}
 
-R functions and variables are both accessed from Ruby in the same way. Unlike in Ruby, R variables and functions cannot share the same name, so there is no possibility of accessing a function when you meant to access a variable (except by user error). 
+R functions and variables are both accessed from Ruby in the same way. Unlike in Ruby, R variables and functions cannot share the same name, so there is no possibility of accessing a function when you meant to access a variable (except by user error).
 
 Similarly to RPy, there are two methods for accessing R objects from Ruby. However, unlike RPy, the two methods are not exactly equivalent so some care should be taken.
 
@@ -203,7 +209,7 @@ As mentioned above, the same syntax is used for retrieving R variables, as shown
 
 \begin{Verbatim}
 irb> r.foo
-RException: Error in get(x, envir, mode, inherits) : 
+RException: Error in get(x, envir, mode, inherits) :
 variable "foo" was not found
 
 from /ruby/site_ruby/1.8/rsruby.rb:351:in `lcall'
@@ -216,7 +222,7 @@ irb> r.foo
 => 42
 \end{Verbatim}
 
-In the first case the R object |foo| is requested by RSRuby and an |RException| thrown when it is not found. After calling |assign| the |foo| variable exists in R and so can be found by RSRuby. 
+In the first case the R object |foo| is requested by RSRuby and an |RException| thrown when it is not found. After calling |assign| the |foo| variable exists in R and so can be found by RSRuby.
 
 Note that when a method is called on the R interpreter with out any arguments, a Ruby object representing the R object of the same name is returned. However, when called with arguments, the object requested is assumed to be an RObj (or subclass thereof) and is called with the arguments given. The conversion of the arguments from Ruby to R is covered in Chapter \ref{conversion_system} and the various calling semantics in section \ref{calling_R_functions}.
 
@@ -493,7 +499,7 @@ irb> RSRuby.set_default_mode(RSRuby::PROC_CONVERSION)
 => 4
 \end{Verbatim}
 
-To test the returned class we use the R |t.test| function, which returns an R list. Note the string representation of the returned object which matches the string form given by R. 
+To test the returned class we use the R |t.test| function, which returns an R list. Note the string representation of the returned object which matches the string form given by R.
 
 \begin{Verbatim}
 irb> e = r.t_test([1,2,3,4,5,6])
@@ -557,7 +563,7 @@ DataFrames are useful objects in R programming
 
 \chapter{Input/Output}
 
-RPy provides a number of utility functions 
+RPy provides a number of utility functions
 
 \chapter{Known Issues and To Do}
 
@@ -585,13 +591,13 @@ RPy provides a number of utility functions
 
 
  Copyright \copyright 2000,2001,2002  Free Software Foundation, Inc.
- 
+
  \bigskip
- 
+
      51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-  
+
  \bigskip
- 
+
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
 \end{center}
@@ -701,7 +707,7 @@ A section \textbf{"Entitled XYZ"} means a named subunit of the Document whose
 title either is precisely XYZ or contains XYZ in parentheses following
 text that translates XYZ in another language.  (Here XYZ stands for a
 specific section name mentioned below, such as \textbf{"Acknowledgements"},
-\textbf{"Dedications"}, \textbf{"Endorsements"}, or \textbf{"History"}.)  
+\textbf{"Dedications"}, \textbf{"Endorsements"}, or \textbf{"History"}.)
 To \textbf{"Preserve the Title"}
 of such a section when you modify the Document means that it remains a
 section "Entitled XYZ" according to this definition.
@@ -788,43 +794,43 @@ and modification of the Modified Version to whoever possesses a copy
 of it.  In addition, you must do these things in the Modified Version:
 
 \begin{itemize}
-\item[A.] 
+\item[A.]
    Use in the Title Page (and on the covers, if any) a title distinct
    from that of the Document, and from those of previous versions
    (which should, if there were any, be listed in the History section
    of the Document).  You may use the same title as a previous version
    if the original publisher of that version gives permission.
-   
+
 \item[B.]
    List on the Title Page, as authors, one or more persons or entities
    responsible for authorship of the modifications in the Modified
    Version, together with at least five of the principal authors of the
    Document (all of its principal authors, if it has fewer than five),
    unless they release you from this requirement.
-   
+
 \item[C.]
    State on the Title page the name of the publisher of the
    Modified Version, as the publisher.
-   
+
 \item[D.]
    Preserve all the copyright notices of the Document.
-   
+
 \item[E.]
    Add an appropriate copyright notice for your modifications
    adjacent to the other copyright notices.
-   
+
 \item[F.]
    Include, immediately after the copyright notices, a license notice
    giving the public permission to use the Modified Version under the
    terms of this License, in the form shown in the Addendum below.
-   
+
 \item[G.]
    Preserve in that license notice the full lists of Invariant Sections
    and required Cover Texts given in the Document's license notice.
-   
+
 \item[H.]
    Include an unaltered copy of this License.
-   
+
 \item[I.]
    Preserve the section Entitled "History", Preserve its Title, and add
    to it an item stating at least the title, year, new authors, and
@@ -833,7 +839,7 @@ of it.  In addition, you must do these things in the Modified Version:
    stating the title, year, authors, and publisher of the Document as
    given on its Title Page, then add an item describing the Modified
    Version as stated in the previous sentence.
-   
+
 \item[J.]
    Preserve the network location, if any, given in the Document for
    public access to a Transparent copy of the Document, and likewise
@@ -842,26 +848,26 @@ of it.  In addition, you must do these things in the Modified Version:
    You may omit a network location for a work that was published at
    least four years before the Document itself, or if the original
    publisher of the version it refers to gives permission.
-   
+
 \item[K.]
    For any section Entitled "Acknowledgements" or "Dedications",
    Preserve the Title of the section, and preserve in the section all
    the substance and tone of each of the contributor acknowledgements
    and/or dedications given therein.
-   
+
 \item[L.]
    Preserve all the Invariant Sections of the Document,
    unaltered in their text and in their titles.  Section numbers
    or the equivalent are not considered part of the section titles.
-   
+
 \item[M.]
    Delete any section Entitled "Endorsements".  Such a section
    may not be included in the Modified Version.
-   
+
 \item[N.]
    Do not retitle any existing section to be Entitled "Endorsements"
    or to conflict in title with any Invariant Section.
-   
+
 \item[O.]
    Preserve any Warranty Disclaimers.
 \end{itemize}

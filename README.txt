@@ -13,7 +13,8 @@ A working R installation is required. R must have been built with the '--enable-
 Ensure the R_HOME environment variable is set appropriately. E.g.:
 
   R_HOME=/usr/lib/R (on Ubuntu Linux)
-  R_HOME=/Library/Frameworks/R.framework/Resources (on OS X)
+  R_HOME=/usr/local/Frameworks/R.framework/Resources (on OS X with Homebrew and `brew --prefix` set to default of /usr/local)
+  R_HOME=/Library/Frameworks/R.framework/Resources (another place to check OS X)
 
 An RSRuby gem is available as well as a package using setup.rb. In each case the installation requires the location of your R library to compile the extension. This is usually the same as R_HOME. If you download the setup.rb package use these incantations:
 
